@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="BaseLibrary/BaseLibrary.csproj" Id="85f72840-c165-45e6-b880-e6a6bb7b1659" />
+  <Project Path="Client/Client.csproj" Id="f200b878-2613-4813-888d-8f3fd829fbb1" />
+  <Project Path="ClientLibrary/ClientLibrary.csproj" Id="c90995f1-fc92-4dd5-bd22-5ffec9788137" />
+  <Project Path="Server/Server.csproj" Id="69329f7d-1d94-4214-a390-532d9430b0d3" />
+  <Project Path="ServerLibrary/ServerLibrary.csproj" Id="372c6e02-2011-4f89-9dec-25e4ea038f12" />
+</Solution>
