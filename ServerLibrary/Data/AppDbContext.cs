@@ -11,5 +11,7 @@ namespace ServerLibrary.Data
         public DbSet<Branch> Branchs => Set<Branch>();
         public DbSet<Town> Towns => Set<Town>();
         public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
+        public DbSet<SystemRole> SystemRoles => Set<SystemRole>();
+        public DbSet<UserRole> UserRoles => Set<UserRole>();
     }
 }
