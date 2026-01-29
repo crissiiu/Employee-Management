@@ -5,13 +5,14 @@ namespace ServerLibrary.Data
 {
     public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(options)
     {
-        public DbSet<Employee> Employees => Set<Employee>();
-        public DbSet<GeneralDepartment> GeneralDepartments => Set<GeneralDepartment>();
-        public DbSet<Department> Departments => Set<Department>();
-        public DbSet<Branch> Branchs => Set<Branch>();
-        public DbSet<Town> Towns => Set<Town>();
-        public DbSet<ApplicationUser> ApplicationUsers => Set<ApplicationUser>();
-        public DbSet<SystemRole> SystemRoles => Set<SystemRole>();
-        public DbSet<UserRole> UserRoles => Set<UserRole>();
+        public DbSet<Employee> Employees { get; set; }
+        public DbSet<GeneralDepartment> GeneralDepartments { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Branch> Branchs { get; set; }
+        public DbSet<Town> Towns { get; set; }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+        public DbSet<SystemRole> SystemRoles { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RefreshTokenInfo> RefreshTokenInfos { get; set; }
     }
 }
