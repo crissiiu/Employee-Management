@@ -22,7 +22,7 @@ namespace ClientLibrary.Services.Implementations
                 );
             }
 
-            return await result.Content.ReadFromJsonAsync<GeneralResponse>()!;
+            return (await result.Content.ReadFromJsonAsync<GeneralResponse>())!;
         }
 
         public async Task<LoginResponse> RefreshTokenAsync(RefreshToken token)
@@ -33,13 +33,14 @@ namespace ClientLibrary.Services.Implementations
         public async Task<LoginResponse> SignInAsync(Login user)
         {
             var httpClient = getHttpClient.GetPublicHttpClient();
-            var result = await httpClient.PostAsJsonAsync($"{AuthUrl}/refresh-token", user);
+            // Sign in should call the login endpoint
+            var result = await httpClient.PostAsJsonAsync($"{AuthUrl}/login", user);
             if (!result.IsSuccessStatusCode)
             {
                 return new LoginResponse(false, "Error occured");
             }
 
-            return await result.Content.ReadFromJsonAsync<LoginResponse>()!;
+            return (await result.Content.ReadFromJsonAsync<LoginResponse>())!;
         }
         public async Task<WeatherForecast[]> GetWeatherForecastAsync()
         {

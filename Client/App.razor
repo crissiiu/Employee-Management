@@ -1,6 +1,52 @@
-﻿<Router AppAssembly="@typeof(App).Assembly" NotFoundPage="typeof(Pages.NotFound)">
-    <Found Context="routeData">
-        <RouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)"/>
-        <FocusOnNavigate RouteData="@routeData" Selector="h1" />
-    </Found>
-</Router>
+﻿@using Microsoft.AspNetCore.Components.Authorization;
+<!--. <CascadingAuthenticationState>
+Đây là một Cascading Value Wrapper.
+
+Cơ chế: Nó bao bọc toàn bộ ứng dụng để cung cấp đối tượng Task<AuthenticationState> 
+    xuống tất cả các component con thông qua cơ chế [CascadingParameter].
+
+Chức năng: Đảm bảo rằng bất kỳ component nào bên trong (từ Menu, Button đến Page) 
+cũng có thể truy cập vào trạng thái định danh của User mà không cần truyền prop thủ công.
+-->
+<CascadingAuthenticationState> 
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <!--2. <AuthorizeRouteView>
+            Đây là phiên bản nâng cao của RouteView, tích hợp sẵn logic kiểm tra quyền (Authorization).
+
+            Logic xử lý: Khi Router khớp được một URL (RouteData), AuthorizeRouteView sẽ intercept (chặn) yêu cầu đó.
+
+            Middleware Integration: Nó gọi xuống CustomAuthenticationStateProvider (đã đăng ký trong DI) để lấy ClaimsPrincipal.
+
+            Nếu IsAuthenticated = true: Render component của trang đó bên trong DefaultLayout (MainLayout).
+
+            Nếu IsAuthenticated = false: Kích hoạt luồng NotAuthorized (mặc định sẽ không hiển thị gì hoặc redirect tùy cấu hình).
+            -->
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <!--
+                3. <Authorizing>
+                Đây là Asynchronous UI State.
+
+                Trạng thái: Vì hàm GetAuthenticationStateAsync là một Task (có thể bao gồm gọi API hoặc đọc LocalStorage), nên ứng dụng sẽ có một khoảng trễ (latency).
+
+                Chức năng: Component này đóng vai trò là một Loading Placeholder. Nó được render trong khi chờ Task<AuthenticationState> hoàn thành để tránh việc UI bị 
+                    giật hoặc hiển thị sai trạng thái trước khi xác định được danh tính người dùng.
+                -->
+                <Authorizing>Please wait a moment...</Authorizing>
+            </AuthorizeRouteView>
+        </Found>
+        <!--
+        4. <Router> và <NotFound>
+        Routing Engine: Thực hiện pattern matching giữa URL trên trình duyệt và các attribute [Route] được khai báo trên các file .razor.
+
+        Fallback Logic: Nếu không tìm thấy bất kỳ Endpoint nào khớp với URL, luồng xử lý sẽ nhảy vào <NotFound>, tại đây nó vẫn áp dụng MainLayout để giữ giao diện 
+            thống nhất nhưng render nội dung lỗi 404.
+        -->
+        <NotFound>
+            <PageTitle>Not found</PageTitle>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p role="alert">Sorry, there's nothing at this address'</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>
