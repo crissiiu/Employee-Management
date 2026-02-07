@@ -11,10 +11,11 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
+builder.Services.AddTransient<CustomHttpClient>();
 builder.Services.AddHttpClient("SystemApiClient", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7065");
-});
+}).AddHttpMessageHandler<CustomHttpClient>();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri("https://localhost:7065/") });
 //kích hoạt hệ thống phân quyền
 builder.Services.AddAuthorizationCore();
