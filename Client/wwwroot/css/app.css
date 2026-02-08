@@ -1,4 +1,4 @@
-html, body {
+﻿html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
 }
 
@@ -112,4 +112,14 @@ code {
 
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
     text-align: start;
+}
+
+/* Ẩn banner thông báo bản quyền của Syncfusion */
+#js-licensing,
+div[style*="z-index: 99999999"],
+div[style*="position: fixed; top: 0px; left: 0px;"] {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    width: 0 !important;
 }

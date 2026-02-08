@@ -1,11 +1,14 @@
 ﻿using Blazored.LocalStorage;
 using Client;
+using Client.ApplicationStates;
 using ClientLibrary.Helpers;
 using ClientLibrary.Services.Contracts;
 using ClientLibrary.Services.Implementations;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Syncfusion.Blazor;
+using Syncfusion.Blazor.Popups;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -29,5 +32,11 @@ builder.Services.AddScoped<LocalStorageService>();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthenticationStateProvider>();
 //Đăng ký dịch vụ nghiệp vụ liên quan tới tài khoản (Login, register)
 builder.Services.AddScoped<IUserAccountService, UserAccountService>();
+
+builder.Services.AddScoped<DepartmentState>();
+
+builder.Services.AddSyncfusionBlazor();
+builder.Services.AddScoped<SfDialogService>();
+
 
 await builder.Build().RunAsync();

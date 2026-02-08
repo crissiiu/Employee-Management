@@ -1,13 +1,25 @@
 ﻿@page "/identity/account/login"
+@using Syncfusion.Blazor.Popups
+@layout AuthenticationLayout
+@inject SfDialogService DialogService
 <div class="container">
     <div class="row">
-        <div class="col-lg-6">
+        <div class="col-lg-4"></div>
+        <div class="col-lg-4">
             <EditForm Enhance Model="User" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator />
-                <ValidationSummary />
-                <div class="card">
-                    <div class="card-header">Fill this form to Login</div>
-                    <div class="card-body">
+                <div class="card bg-dark" style="opacity:0.7; margin-top:50%; border-radius:10px; color:white; font-weight:bold">
+                    <div class="card-header text-center fs-5 mb-2">Login</div>
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                            <div class="col-lg-4 col-md-4 col-sm-4 d-flex justify-content-center">
+                                <img style="border-radius:20px" src="images/companylogos/logo.jpg" height="50" width="50" />
+                            </div>
+                            <div class="col-lg-4 col-md-4 col-sm-4"></div>
+                        </div>
+                    </div>
+                    <div class="card-body ">
                         <div class="form-group mt-3">
                             <label class="form-label">Email</label>
                             <InputText @bind-Value="User.Email" class="form-control"></InputText>
@@ -17,21 +29,41 @@
                             <input type="password" @bind="User.Password" class="form-control" />
                         </div>
                         <div class="form-group mt-3">
-                            <button class="btn btn-outline-primary float-end">Login</button>
+                            @if (ShowLoadingButton)
+                            {
+                                <Client.Pages.OtherPages.ButtonLoadingSpinner></Client.Pages.OtherPages.ButtonLoadingSpinner>
+                            }
+                            else
+                            {
+                                <button class="btn btn-outline-primary float-end">Login</button>
+                            }
                         </div>
+                    </div>
+                    <div class="card-footer">
+                        <span class="text-center">
+                            Don't have account?
+                            <a class="btn-link" href="identity/account/register">Sign Up</a>
+                        </span>
+                        <ValidationSummary/>
                     </div>
                 </div>
             </EditForm>
         </div>
+        <div class="col-lg-4"></div>
     </div>
 </div>
+
+<Syncfusion.Blazor.Popups.SfDialogProvider />
 @code {
+    public bool ShowLoadingButton { get; set; } = false;
     Login User = new();
     async Task HandleLogin()
     {
+        ShowLoadingButton = true;
         var result = await accountService.SignInAsync(User);
         if (result.Flag)
         {
+            await DisplayDialog(result.Message, "Login Success");
             var customAuthStateProvider = (CustomAuthenticationStateProvider)AuthStateProvider;
             await customAuthStateProvider.UpdateAuthenticationState(new UserSession()
             {
@@ -39,6 +71,36 @@
                 RefreshToken = result.RefreshToken
             });
             NavManager.NavigateTo("/", forceLoad: true);
+        }
+        ShowLoadingButton = false;
+    }
+
+    private async Task DisplayDialog(string content, string title)
+    {
+        await DialogService.AlertAsync(content, title);
+    }
+
+    [CascadingParameter] public Task<AuthenticationState> AuthenticationState { get; set; }
+    protected async override Task OnInitializedAsync()
+    {
+        await CheckUserAuthentication();
+    }
+    private async Task CheckUserAuthentication()
+    {
+        var authState = await AuthenticationState;
+        var user = authState.User;
+
+        if (user.Identity is { IsAuthenticated: true })
+        {
+            string currentUri = NavManager.Uri;
+            if (!currentUri.Contains("/home/dashboard"))
+            {
+                NavManager.NavigateTo("/home/dashboard");
+            }
+        }
+        else
+        {
+            NavManager.NavigateTo("/identity/account/login");
         }
     }
 }
